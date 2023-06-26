@@ -1,6 +1,6 @@
 {
     "id": "A895CDD8",
-    "path": "D:/GitHub/adult_gaze_coding/_adult_gaze_coding_ToShare/Analyses/analysis_icatcher.R",
+    "path": "D:/GitHub/adult-gaze-coding/Analyses/analysis_icatcher.R",
     "project_path": "analysis_icatcher.R",
     "type": "r_source",
     "hash": "0",
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "11,31",
-        "scrollLine": "0"
+        "cursorPosition": "814,41",
+        "scrollLine": "802"
     },
     "folds": "",
-    "lastKnownWriteTime": 1687406332,
+    "lastKnownWriteTime": 1687788263,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1687406332059,
+    "last_content_update": 1687788263306,
     "read_only": false,
     "read_only_alternatives": []
 }

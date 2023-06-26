@@ -7,7 +7,7 @@
 # https://analysis-navi.com/?p=553
 
 library(emmeans)   # ver 1.8.3
-library(ggeffects) # ver 1.1.4
+library(ggeffects) # ver 1.2.3
 library(here)      # ver 1.0.1
 library(irr)       # ver 0.84.1
 library(lme4)      # ver 1.1.31
@@ -68,13 +68,19 @@ summary(fit.f.i.n)
 
 res.f.i.n <- ggpredict(fit.f.i.n, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Ireland"), type="fixed")
 # res.f.i.n <- ggpredict(fit.f.i.n, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Japan"), type="fixed")
-res.f.i.n
-res.f.i.n <- res.f.i.n %>% mutate(Lighting=x, Distance=group, Rotation=facet, Position=panel)
+res.f.i.n 
+res.f.i.n <- as.data.frame(res.f.i.n) %>% rename(Lighting=x, Distance=group, Rotation=facet, Position=panel) %>% 
+  mutate(Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right")))
 
 ## Visualization
 d.i.n %>% group_by(id, Lighting, Distance, Position, Rotation, trial, filename, Country) %>% 
   summarize(nface=sum(face),
             nface_prop=nface/1) %>% 
+  mutate(Position=factor(Position, levels=c("Sl24"="Left (24 cm)", "Sc00"="Center", "Sr24"="Right (24 cm)")),
+         Lighting=factor(Lighting, levels=c("Left", "Front", "Right")),
+         Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right"))) %>% 
   ggplot(aes(x=Lighting, y=nface_prop))+
   geom_abline(slope=0, intercept=0.5, linetype="dashed", color="gray30", lwd=0.5)+
   geom_jitter(width=0.2, height=0.05, color="gray70", size=0.1, alpha=0.3)+
@@ -106,12 +112,18 @@ summary(fit.f.i.a)
 res.f.i.a <- ggpredict(fit.f.i.a, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Ireland"), type="fixed")
 # res.f.i.a <- ggpredict(fit.f.i.a, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Japan"), type="fixed")
 res.f.i.a
-res.f.i.a <- res.f.i.a %>% mutate(Lighting=x, Distance=group, Rotation=facet, Position=panel)
+res.f.i.a <- as.data.frame(res.f.i.a) %>% rename(Lighting=x, Distance=group, Rotation=facet, Position=panel) %>% 
+  mutate(Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right")))
 
 ## Visualization
 d.i.a %>% group_by(id, Lighting, Distance, Position, Rotation, trial, filename, Country) %>% 
   summarize(nface=sum(face),
             nface_prop=nface/1) %>% 
+  mutate(Position=factor(Position, levels=c("Sl24"="Left (24 cm)", "Sc00"="Center", "Sr24"="Right (24 cm)")),
+         Lighting=factor(Lighting, levels=c("Left", "Front", "Right")),
+         Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right"))) %>% 
   ggplot(aes(x=Lighting, y=nface_prop))+
   geom_abline(slope=0, intercept=0.5, linetype="dashed", color="gray30", lwd=0.5)+
   geom_jitter(width=0.2, height=0.05, color="gray70", size=0.1, alpha=0.3)+
@@ -169,12 +181,18 @@ summary(fit.g.i.n)
 res.g.i.n <- ggpredict(fit.g.i.n, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Ireland"), type="fixed")
 # res.g.i.n <- ggpredict(fit.g.i.n, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Japan"), type="fixed")
 res.g.i.n
-res.g.i.n <- res.g.i.n %>% mutate(Lighting=x, Distance=group, Rotation=facet, Position=panel)
+res.g.i.n <- as.data.frame(res.g.i.n) %>% rename(Lighting=x, Distance=group, Rotation=facet, Position=panel) %>% 
+  mutate(Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right")))
 
 ## Visualization
 d.i.n %>% group_by(id, Lighting, Distance, Position, Rotation, trial, filename, Country) %>% 
   summarize(ncrr=sum(Y),
             ncrr_prop=ncrr/1) %>% 
+  mutate(Position=factor(Position, levels=c("Sl24"="Left (24 cm)", "Sc00"="Center", "Sr24"="Right (24 cm)")),
+         Lighting=factor(Lighting, levels=c("Left", "Front", "Right")),
+         Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right"))) %>% 
   ggplot(aes(x=Lighting, y=ncrr_prop))+
   geom_abline(slope=0, intercept=1/3, linetype="dashed", color="gray30", lwd=0.5)+
   geom_jitter(width=0.2, height=0.05, color="gray70", size=0.1, alpha=0.3)+
@@ -239,7 +257,7 @@ d.spec %>% group_by(trial, Prediction) %>% summarize(Prop=round(n()/40, 2)) %>%
   geom_line(aes(group=Prediction), size=1)+
   scale_y_continuous(limits=c(0,1), breaks=seq(0,1,0.2))+
   scale_x_continuous(limits=c(1,10), breaks=1:10)+
-  labs(x="Number plates", y="Proportion of prediction")+
+  labs(x="Numbered discs", y="Proportion of prediction")+
   theme_bw()+
   theme(axis.ticks=element_line(color = "black"),
         axis.text=element_text(size=14, color = "black"),
@@ -288,12 +306,18 @@ summary(fit.g.i.a)
 res.g.i.a <- ggpredict(fit.g.i.a, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Ireland"), type="fixed")
 # res.g.i.a <- ggpredict(fit.g.i.a, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Japan"), type="fixed")
 res.g.i.a
-res.g.i.a <- res.g.i.a %>% mutate(Lighting=x, Distance=group, Rotation=facet, Position=panel)
+res.g.i.a <- as.data.frame(res.g.i.a) %>% rename(Lighting=x, Distance=group, Rotation=facet, Position=panel) %>% 
+  mutate(Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right")))
 
 ## Visualization
 d.i.a %>% group_by(id, Lighting, Distance, Position, Rotation, trial, filename, Country) %>% 
   summarize(ncrr=sum(Y),
             ncrr_prop=ncrr/1) %>% 
+  mutate(Position=factor(Position, levels=c("Sl24"="Left (24 cm)", "Sc00"="Center", "Sr24"="Right (24 cm)")),
+         Lighting=factor(Lighting, levels=c("Left", "Front", "Right")),
+         Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right"))) %>% 
   ggplot(aes(x=Lighting, y=ncrr_prop))+
   geom_abline(slope=0, intercept=1/3, linetype="dashed", color="gray30", lwd=0.5)+
   geom_jitter(width=0.2, height=0.05, color="gray70", size=0.1, alpha=0.3)+
@@ -358,7 +382,7 @@ d.spec %>% group_by(trial, Prediction) %>% summarize(Prop=round(n()/40, 2)) %>%
   geom_line(aes(group=Prediction), size=1)+
   scale_y_continuous(limits=c(0,1), breaks=seq(0,1,0.2))+
   scale_x_continuous(limits=c(1,10), breaks=1:10)+
-  labs(x="Number plates", y="Proportion of prediction")+
+  labs(x="Numbered discs", y="Proportion of prediction")+
   theme_bw()+
   theme(axis.ticks=element_line(color = "black"),
         axis.text=element_text(size=14, color = "black"),
@@ -397,12 +421,18 @@ summary(fit.g.i.n)
 res.g.i.n <- ggpredict(fit.g.i.n, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Ireland"), type="fixed")
 # res.g.i.n <- ggpredict(fit.g.i.n, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Japan"), type="fixed")
 res.g.i.n
-res.g.i.n <- res.g.i.n %>% mutate(Lighting=x, Distance=group, Rotation=facet, Position=panel)
+res.g.i.n <- as.data.frame(res.g.i.n) %>% rename(Lighting=x, Distance=group, Rotation=facet, Position=panel) %>% 
+  mutate(Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right")))
 
 ## Visualization
 d.i.n %>% group_by(id, Lighting, Distance, Position, Rotation, trial, filename, Country) %>% 
   summarize(ncrr=sum(Y),
             ncrr_prop=ncrr/1) %>% 
+  mutate(Position=factor(Position, levels=c("Sl24"="Left (24 cm)", "Sc00"="Center", "Sr24"="Right (24 cm)")),
+         Lighting=factor(Lighting, levels=c("Left", "Front", "Right")),
+         Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right"))) %>% 
   ggplot(aes(x=Lighting, y=ncrr_prop))+
   geom_abline(slope=0, intercept=1/3, linetype="dashed", color="gray30", lwd=0.5)+
   geom_jitter(width=0.2, height=0.05, color="gray70", size=0.1, alpha=0.3)+
@@ -467,7 +497,7 @@ d.spec %>% group_by(trial, Prediction) %>% summarize(Prop=round(n()/40, 2)) %>%
   geom_line(aes(group=Prediction), size=1)+
   scale_y_continuous(limits=c(0,1), breaks=seq(0,1,0.2))+
   scale_x_continuous(limits=c(1,10), breaks=1:10)+
-  labs(x="Number plates", y="Proportion of prediction")+
+  labs(x="Numbered discs", y="Proportion of prediction")+
   theme_bw()+
   theme(axis.ticks=element_line(color = "black"),
         axis.text=element_text(size=14, color = "black"),
@@ -488,12 +518,18 @@ summary(fit.g.i.a)
 res.g.i.a <- ggpredict(fit.g.i.a, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Ireland"), type="fixed")
 # res.g.i.a <- ggpredict(fit.g.i.a, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Japan"), type="fixed")
 res.g.i.a
-res.g.i.a <- res.g.i.a %>% mutate(Lighting=x, Distance=group, Rotation=facet, Position=panel)
+res.g.i.a <- as.data.frame(res.g.i.a) %>% rename(Lighting=x, Distance=group, Rotation=facet, Position=panel) %>% 
+  mutate(Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right")))
 
 ## Visualization
 d.i.a %>% group_by(id, Lighting, Distance, Position, Rotation, trial, filename, Country) %>% 
   summarize(ncrr=sum(Y),
             ncrr_prop=ncrr/1) %>% 
+  mutate(Position=factor(Position, levels=c("Sl24"="Left (24 cm)", "Sc00"="Center", "Sr24"="Right (24 cm)")),
+         Lighting=factor(Lighting, levels=c("Left", "Front", "Right")),
+         Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right"))) %>% 
   ggplot(aes(x=Lighting, y=ncrr_prop))+
   geom_abline(slope=0, intercept=1/3, linetype="dashed", color="gray30", lwd=0.5)+
   geom_jitter(width=0.2, height=0.05, color="gray70", size=0.1, alpha=0.3)+
@@ -558,7 +594,7 @@ d.spec %>% group_by(trial, Prediction) %>% summarize(Prop=round(n()/40, 2)) %>%
   geom_line(aes(group=Prediction), size=1)+
   scale_y_continuous(limits=c(0,1), breaks=seq(0,1,0.2))+
   scale_x_continuous(limits=c(1,10), breaks=1:10)+
-  labs(x="Number plates", y="Proportion of prediction")+
+  labs(x="Numbered discs", y="Proportion of prediction")+
   theme_bw()+
   theme(axis.ticks=element_line(color = "black"),
         axis.text=element_text(size=14, color = "black"),
@@ -598,12 +634,18 @@ summary(fit.g.i.n)
 res.g.i.n <- ggpredict(fit.g.i.n, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Ireland"), type="fixed")
 # res.g.i.n <- ggpredict(fit.g.i.n, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Japan"), type="fixed")
 res.g.i.n
-res.g.i.n <- res.g.i.n %>% mutate(Lighting=x, Distance=group, Rotation=facet, Position=panel)
+res.g.i.n <- as.data.frame(res.g.i.n) %>% rename(Lighting=x, Distance=group, Rotation=facet, Position=panel) %>% 
+  mutate(Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right")))
 
 ## Visualization
 d.i.n %>% group_by(id, Lighting, Distance, Position, Rotation, trial, filename, Country) %>% 
   summarize(ncrr=sum(Y),
             ncrr_prop=ncrr/1) %>% 
+  mutate(Position=factor(Position, levels=c("Sl24"="Left (24 cm)", "Sc00"="Center", "Sr24"="Right (24 cm)")),
+         Lighting=factor(Lighting, levels=c("Left", "Front", "Right")),
+         Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right"))) %>% 
   ggplot(aes(x=Lighting, y=ncrr_prop))+
   geom_abline(slope=0, intercept=1/3, linetype="dashed", color="gray30", lwd=0.5)+
   geom_jitter(width=0.2, height=0.05, color="gray70", size=0.1, alpha=0.3)+
@@ -668,7 +710,7 @@ d.spec %>% group_by(trial, Prediction) %>% summarize(Prop=round(n()/40, 2)) %>%
   geom_line(aes(group=Prediction), size=1)+
   scale_y_continuous(limits=c(0,1), breaks=seq(0,1,0.2))+
   scale_x_continuous(limits=c(1,10), breaks=1:10)+
-  labs(x="Number plates", y="Proportion of prediction")+
+  labs(x="Numbered discs", y="Proportion of prediction")+
   theme_bw()+
   theme(axis.ticks=element_line(color = "black"),
         axis.text=element_text(size=14, color = "black"),
@@ -689,12 +731,18 @@ summary(fit.g.i.a)
 res.g.i.a <- ggpredict(fit.g.i.a, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Ireland"), type="fixed")
 # res.g.i.a <- ggpredict(fit.g.i.a, terms=c("Lighting", "Distance", "Rotation", "Position"), condition=c(Country="Japan"), type="fixed")
 res.g.i.a
-res.g.i.a <- res.g.i.a %>% mutate(Lighting=x, Distance=group, Rotation=facet, Position=panel)
+res.g.i.a <- as.data.frame(res.g.i.a) %>% rename(Lighting=x, Distance=group, Rotation=facet, Position=panel) %>% 
+  mutate(Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right")))
 
 ## Visualization
 d.i.a %>% group_by(id, Lighting, Distance, Position, Rotation, trial, filename, Country) %>% 
   summarize(ncrr=sum(Y),
             ncrr_prop=ncrr/1) %>% 
+  mutate(Position=factor(Position, levels=c("Sl24"="Left (24 cm)", "Sc00"="Center", "Sr24"="Right (24 cm)")),
+         Lighting=factor(Lighting, levels=c("Left", "Front", "Right")),
+         Rotation=str_replace_all(Rotation, c("^Center$"="Upright")),
+         Rotation=factor(Rotation, levels=c("Left", "Upright", "Right"))) %>% 
   ggplot(aes(x=Lighting, y=ncrr_prop))+
   geom_abline(slope=0, intercept=1/3, linetype="dashed", color="gray30", lwd=0.5)+
   geom_jitter(width=0.2, height=0.05, color="gray70", size=0.1, alpha=0.3)+
@@ -759,7 +807,7 @@ d.spec %>% group_by(trial, Prediction) %>% summarize(Prop=round(n()/40, 2)) %>%
   geom_line(aes(group=Prediction), size=1)+
   scale_y_continuous(limits=c(0,1), breaks=seq(0,1,0.2))+
   scale_x_continuous(limits=c(1,10), breaks=1:10)+
-  labs(x="Number plates", y="Proportion of prediction")+
+  labs(x="Numbered discs", y="Proportion of prediction")+
   theme_bw()+
   theme(axis.ticks=element_line(color = "black"),
         axis.text=element_text(size=14, color = "black"),
