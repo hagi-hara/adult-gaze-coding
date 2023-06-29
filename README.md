@@ -34,7 +34,7 @@ We provide an explanation of the data structure using **Analyse/Data/SampledData
 |side             |qualitative            | Sc00, Sl24, or Sr24 | Experimental condition of Left-Right Offset (**Sc00** = Center, **Sl24** = Left, **Sr24** = Right). |
 |rotation         |qualitative            | Rc, Rl, or Rr       | Experimental condition of Facial Rotation (**Rc** = Upright, **Rl** = Left, **Rr** = Right). |
 |trial            |quantitative (integer) | 1 to 10             | The number plate at which the participants were asked to look. This provides the ground truth of gaze direction. |
-|time             |quantitative (integer) | 1 or 2              | The order in which the number sequence is repeated　under the same condition (first or second time). |
+|time             |quantitative (integer) | 1 or 2              | The order in which the number sequence is repeated under the same condition (first or second time). |
 |frame            |quantitative (integer) | 23                  | The frame randomly extracted from annotated videos. |
 |annotation       |qualitative            | left, right, away, or noface | Annotations provided by iCatcher+. Note that iCatcher+ returns the left-right annotations from the perspective of the webcam, not the participant. |
 |confidence       |qualitative (continuous) | 0.34 | Confidence values provided by iCatcher+, ranging from 0 to 1. Note that when no face was detected (i.e., **noface**), this value becomes -1. |
