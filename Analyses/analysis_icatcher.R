@@ -5,6 +5,7 @@
 # resources (will be removed later)
 # https://qiita.com/ocean_f/items/c0bdd1d73fc2a7a78963
 # https://analysis-navi.com/?p=553
+# https://rstudio-pubs-static.s3.amazonaws.com/33653_57fc7b8e5d484c909b615d8633c01d51.html
 
 library(emmeans)   # ver 1.8.3
 library(ggeffects) # ver 1.2.3
@@ -31,11 +32,66 @@ table(d.r$x1, d.r$x2)
 agree(cbind(d.r$x1, d.r$x2))
 # 836/840 = 99.5%
 
+
+# -----------------------------------------------------------------------------------------
+# Confirmation of the annotation consistency across frames
+
+## Anonymisation (-)
+d.i.n <- read.csv(here("Data", "_data_all_NonAnonymized.csv"), header=TRUE)
+tmp <- d.i.n %>% group_by(filename) %>% summarize(N = n())
+tmp %>% summary()
+
+res.i.n <- d.i.n %>% group_by(filename, annotation) %>% summarize(N = n()) %>% ungroup() %>% 
+  group_by(filename) %>% summarize(Max = max(N)) %>% 
+  left_join(tmp, by="filename") %>% ungroup() %>%
+  mutate(Prop = Max/N,
+         Dataset = "Non-anonymized")
+res.i.n$Prop %>% summary()
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.3043  0.9565  1.0000  0.9309  1.0000  1.0000
+res.i.n$Prop %>% sd() # 0.1384059
+
+## Anonymisation (+)
+d.i.a <- read.csv(here("Data", "_data_all_Anonymized.csv"), header=TRUE)
+tmp <- d.i.a %>% group_by(filename) %>% summarize(N = n())
+tmp %>% summary()
+
+res.i.a <- d.i.a %>% group_by(filename, annotation) %>% summarize(N = n()) %>% ungroup() %>% 
+  group_by(filename) %>% summarize(Max = max(N)) %>% 
+  left_join(tmp, by="filename") %>% ungroup() %>%
+  mutate(Prop = Max/N,
+         Dataset = "Anonymized")
+res.i.a$Prop %>% summary()
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.3043  0.9565  1.0000  0.9305  1.0000  1.0000 
+res.i.a$Prop %>% sd() # 0.139007
+
+## Visualization
+res.i.n %>% rbind(res.i.a) %>% 
+  mutate(Dataset=factor(Dataset, levels=c("Non-anonymized", "Anonymized"))) %>% 
+  ggplot(aes(x=Dataset, y=Prop, color=Dataset, fill=Dataset))+
+  geom_jitter(width=0.2, height=0.01, size=0.1, alpha=0.05)+
+  geom_boxplot(fill="white", color="black", alpha=0.6, outlier.shape=NA)+
+  scale_y_continuous(limits=c(-0.05,1.05), breaks=seq(0,1,0.25))+
+  labs(x="Dataset", y="Proportion of the most dominant prediction")+
+  theme_bw()+
+  theme(legend.position="none",
+        axis.ticks=element_line(color = "black"),
+        axis.text.x=element_text(size=14, color = "black", angle=45, hjust=1),
+        axis.text=element_text(size=14, color = "black"),
+        axis.title=element_text(size=14, color="black"),
+        strip.text=element_text(size=14),
+        legend.title=element_text(size=14, color="black", hjust=0.2),
+        legend.text=element_text(size=12, color="black")) -> gp
+print(gp)
+
+
+
 # -----------------------------------------------------------------------------------------
 # Facial detection (iCatcher+)
 
 # Preparation
-d.i.n <- read.csv(here("Data", "SampledData", "_data_sampled_NonAnonymized_1.csv"), header=TRUE) %>% 
+d.i.n <- read.csv(here("Data", "SampledData", "_data_sampled_NonAnonymized_02.csv"), header=TRUE) %>% 
   mutate(Lighting=str_replace_all(lighting, c("Lc"="Front", "Ll"="Left", "Lr"="Right")),
          Distance=str_replace_all(distance, c("D30"="Close\n(30 cm)", "D60"="Middle\n(60 cm)", "D90"="Far\n(90 cm)")),
          Distance=factor(Distance, levels=c("Close\n(30 cm)", "Middle\n(60 cm)", "Far\n(90 cm)")),
@@ -46,7 +102,7 @@ d.i.n <- read.csv(here("Data", "SampledData", "_data_sampled_NonAnonymized_1.csv
          face=case_when(annotation==" noface" ~ 0, T~1)) %>% 
   dplyr::select(-lighting, -distance, -side, -rotation)
 
-d.i.a <- read.csv(here("Data", "SampledData", "_data_sampled_Anonymized_1.csv"), header=TRUE) %>% 
+d.i.a <- read.csv(here("Data", "SampledData", "_data_sampled_Anonymized_05.csv"), header=TRUE) %>% 
   mutate(Lighting=str_replace_all(lighting, c("Lc"="Front", "Ll"="Left", "Lr"="Right")),
          Distance=str_replace_all(distance, c("D30"="Close\n(30 cm)", "D60"="Middle\n(60 cm)", "D90"="Far\n(90 cm)")),
          Distance=factor(Distance, levels=c("Close\n(30 cm)", "Middle\n(60 cm)", "Far\n(90 cm)")),
@@ -63,6 +119,7 @@ d.i.a %>% group_by(face) %>% summarize(N = n(), Prop = N/nrow(d.i.n)) %>% subset
 
 # Regression modeling (Anonymisation(-))
 fit.f.i.n <- glmer(face ~ Lighting + Distance + Position + Rotation + Country + (1|id), data=d.i.n, family=binomial,
+                   # control=glmerControl(optimizer="nlminbwrap", calc.derivs = FALSE, optCtrl = list(maxfun = 10000, maxiter=100000)))
                    control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
 summary(fit.f.i.n)
 
@@ -106,6 +163,7 @@ ggsave(file=here("Figures", "Figure_3.png"), plot=gp, dpi=350, width=8, height=6
 
 # Regression modeling (Anonymisation(+))
 fit.f.i.a <- glmer(face ~ Lighting + Distance + Position + Rotation + Country + (1|id), data=d.i.a, family=binomial,
+                   # control=glmerControl(optimizer="nlminbwrap", calc.derivs = FALSE, optCtrl = list(maxfun = 10000, maxiter=100000)))
                    control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
 summary(fit.f.i.a)
 
@@ -175,6 +233,7 @@ d.i.a %>% group_by(Y) %>% summarize(N = n(), Prop = N/nrow(d.i.n)) %>% subset(Y=
 
 # Regression modeling (Anonymisation(-))
 fit.g.i.n <- glmer(Y ~ Lighting + Distance + Position + Rotation + Country + (1|id), data=d.i.n, family=binomial,
+                   # control=glmerControl(optimizer="nlminbwrap", calc.derivs = FALSE, optCtrl = list(maxfun = 10000, maxiter=100000)))
                    control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
 summary(fit.g.i.n)
 
@@ -300,6 +359,7 @@ ggsave(file=here("Figures", "Figure_S4_NonAnonym_Small_Worst.png"), plot=gp, dpi
 
 # Regression modeling (Anonymisation(+))
 fit.g.i.a <- glmer(Y ~ Lighting + Distance + Position + Rotation + Country + (1|id), data=d.i.a, family=binomial,
+                   # control=glmerControl(optimizer="nlminbwrap", calc.derivs = FALSE, optCtrl = list(maxfun = 10000, maxiter=100000)))
                    control=glmerControl(optimizer="bobyqa",optCtrl=list(maxfun=2e5)))
 summary(fit.g.i.a)
 
@@ -552,7 +612,7 @@ ggsave(file=here("Figures", "Figure_S3_Anonym_Medium.png"), plot=gp, dpi=350, wi
 ### Best condition 
 d.spec <- d.i.a %>% subset(Lighting=="Front" & Distance=="Close\n(30 cm)" & Position=="Left (24 cm)" & Rotation=="Center")
 ### Worst condition
-d.spec <- d.i.a %>% subset(Lighting=="Left" & Distance=="Far\n(90 cm)" & Position=="Center" & Rotation=="Right")
+d.spec <- d.i.a %>% subset(Lighting=="Right" & Distance=="Far\n(90 cm)" & Position=="Right (24 cm)" & Rotation=="Right")
 ### Creating Confusion matrix
 tmp1 <- d.spec %>% group_by(Actual) %>% summarize(Nact=n())
 tmp2 <- d.spec %>% group_by(Prediction) %>% summarize(Npred=n())
@@ -765,7 +825,7 @@ ggsave(file=here("Figures", "Figure_S3_Anonym_Large.png"), plot=gp, dpi=350, wid
 ### Best condition 
 d.spec <- d.i.a %>% subset(Lighting=="Front" & Distance=="Close\n(30 cm)" & Position=="Center" & Rotation=="Center")
 ### Worst condition
-d.spec <- d.i.a %>% subset(Lighting=="Right" & Distance=="Far\n(90 cm)" & Position=="Right (24 cm)" & Rotation=="Right")
+d.spec <- d.i.a %>% subset(Lighting=="Right" & Distance=="Far\n(90 cm)" & Position=="Left (24 cm)" & Rotation=="Right")
 ### Creating Confusion matrix
 tmp1 <- d.spec %>% group_by(Actual) %>% summarize(Nact=n())
 tmp2 <- d.spec %>% group_by(Prediction) %>% summarize(Npred=n())
