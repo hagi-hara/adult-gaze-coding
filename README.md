@@ -6,6 +6,8 @@ This repository includes the codes for pre-processing and analyses for the follo
 
 Anonymized (2023). Exploration of factors affecting webcam-based automated gaze coding.
 
+![Examples](https://github.com/hagi-hara/adult-gaze-coding/assets/40618747/52eeb4e3-2f89-436b-8b27-4ef02f5bee6d)
+
 
 ## Folder Structure
 - Preprocessing
