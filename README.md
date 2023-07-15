@@ -15,16 +15,21 @@ Anonymized (2023). Exploration of factors affecting webcam-based automated gaze 
 - Analyses
   - adult_gaze_coding.Rproj: Open this file and run analysis_icatcher.R
   - analysis_icatcher.R
+  - Results_Differences_across_Datasets.xlsx: Overview of the results across different datasets that were extracted by different random seeds.
   - Data
     - RawData_Anonymized: CSV data of the experimental conditions and gaze direction estimations for each participant
     - RawData_NonAnonymized: CSV data of the experimental conditions and gaze direction estimations for each participant
-    - SampledData: Datasets for analyses (**1** = dataset used in the main analysis, **2** = dataset extracted with another random seed)
+    - SampledData: Datasets for analyses (The datasets used in the main analyses were **02** for Non-anonymized and **05** for Anonymized datasets)
+    - _data_all_Anonymized.csv: The dataset in which all the CSV data in the RawData_Anonymized folder were concatenated.
+    - _data_all_Nonanonymized.csv: The dataset in which all the CSV data in the RawData_NonAnonymized folder were concatenated.
+    - _last_frame_Anonymized.csv: The concatenated dataset with only the last frame per video.
+    - _last_frame_NonAnonymized.csv: The concatenated dataset with only the last frame per video.
     - reliability_check.csv
   - Figures
 
 
 ## Data Structure
-We provide an explanation of the data structure using **Analyse/Data/SampledData/_data_sampled_NonAnonymized_1.csv** as an example. See also lines 38-47 in **Analyse/analysis_icatcher.R** for variable renamings.
+We provide an explanation of the data structure using **Analyse/Data/SampledData/_data_sampled_NonAnonymized_1.csv** as an example. See also lines 94-103 in **Analyse/analysis_icatcher.R** for variable renamings.
 
 | Column Name     | Variable              | Example             | Explanation                                             |
 | ----            | ----                  |----                 |   ----                                                  |
