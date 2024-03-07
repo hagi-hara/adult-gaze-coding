@@ -1,0 +1,26 @@
+{
+    "id": "36D91626",
+    "path": "D:/GitHub/adult-gaze-coding/Analyses/2_FaceDetection.R",
+    "project_path": "2_FaceDetection.R",
+    "type": "r_source",
+    "hash": "2693901557",
+    "contents": "",
+    "dirty": false,
+    "created": 1705586069376.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "124,28",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1707029679,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1707029679384,
+    "read_only": false,
+    "read_only_alternatives": []
+}

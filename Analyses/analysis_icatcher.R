@@ -455,6 +455,7 @@ print(gp)
 ggsave(file=here("Figures", "Figure_S4_Anonym_Small_Worst.png"), plot=gp, dpi=350, width=5.2, height=4)
 
 
+
 # -----------------------------------------------------------------------------------------
 # Screen size = Medium (18.5") 
 
