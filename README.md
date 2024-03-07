@@ -15,18 +15,19 @@ Anonymized (2023). Exploration of factors affecting webcam-based automated gaze 
   - run_icatcher.py: For *iCatcher+*, see this link: [https://github.com/icatcherplus/icatcher_plus](https://github.com/icatcherplus/icatcher_plus)
   - ffprobe.py
 - Analyses
-  - adult_gaze_coding.Rproj: Open this file and run analysis_icatcher.R
-  - analysis_icatcher.R
-  - Results_Differences_across_Datasets.xlsx: Overview of the results across different datasets that were extracted by different random seeds.
+  - adult_gaze_coding.Rproj: Open this file and run R files accordingly
+  - 1_DataShaping.R
+  - 2_FaceDetection.R
+  - 3_GazeDirection_iCatcher+.R
+  - 4_GazeDirection_OWLET.R
+  - NonAnonymization_vs_Anonymization.xlsx: Overview of the results across different datasets.
   - Data
     - RawData_Anonymized: CSV data of the experimental conditions and gaze direction estimations for each participant
     - RawData_NonAnonymized: CSV data of the experimental conditions and gaze direction estimations for each participant
-    - SampledData: Datasets for analyses (The datasets used in the main analyses were **02** for Non-anonymized and **05** for Anonymized datasets)
-    - _data_all_Anonymized.csv: The dataset in which all the CSV data in the RawData_Anonymized folder were concatenated.
-    - _data_all_Nonanonymized.csv: The dataset in which all the CSV data in the RawData_NonAnonymized folder were concatenated.
     - _last_frame_Anonymized.csv: The concatenated dataset with only the last frame per video.
     - _last_frame_NonAnonymized.csv: The concatenated dataset with only the last frame per video.
     - reliability_check.csv
+    - files_correspondence.csv
   - Figures
 
 
