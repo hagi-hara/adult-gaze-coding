@@ -51,7 +51,7 @@ We provide an explanation of the data structure using **Analyse/Data/SampledData
 
 
 ## Dataset Availability
-The videos for which participants agreed to public availability (*n* = 47) are uploaded to [https://osf.io/48zvh/?view_only=22a82bc40bab441589660168a48944c5](https://osf.io/48zvh/?view_only=22a82bc40bab441589660168a48944c5).
+The videos for which participants agreed to public availability (*n* = 47) are uploaded to [https://doi.org/10.17605/OSF.IO/48ZVH](https://doi.org/10.17605/OSF.IO/48ZVH).
 
 
 ## Authors of This Repository
