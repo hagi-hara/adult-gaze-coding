@@ -4,7 +4,7 @@ Exploration of Factors Affecting Webcam-Based Automated Gaze Coding
 ## Overview
 This repository includes the codes for pre-processing and analyses for the following paper:
 
-Hagihara, H., Zaadnoordijk, L., Cusack, R., N., Kimura, & Tsuji, S. (2024). Exploration of factors affecting webcam-based automated gaze coding. _Behavior Research Methods_. 
+Hagihara, H., Zaadnoordijk, L., Cusack, R., N., Kimura, & Tsuji, S. (2024). Exploration of factors affecting webcam-based automated gaze coding. _Behavior Research Methods_. [https://doi.org/10.3758/s13428-024-02424-1](https://doi.org/10.3758/s13428-024-02424-1)
 
 
 ![Examples](https://github.com/hagi-hara/adult-gaze-coding/assets/40618747/52eeb4e3-2f89-436b-8b27-4ef02f5bee6d)
